@@ -32,6 +32,11 @@ apt-get update
 # Install the Docker engine
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# Set docker user
+groupadd docker
+usermod -aG docker $USER
+newgrp docker
+
 # Install Ansible
 apt install -y software-properties-common
 add-apt-repository --yes --update ppa:ansible/ansible
