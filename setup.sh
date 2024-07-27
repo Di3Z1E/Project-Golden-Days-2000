@@ -49,3 +49,10 @@ echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 apt-get update
 apt-get install -y jenkins
+
+# Download game servers
+docker pull lacledeslan/gamesvr-goldsource-cstrike
+docker pull lacledeslan/gamesvr-csgo
+docker pull lacledeslan/gamesvr-cssource
+docker pull sourceservers/left4dead2
+docker pull krustowski/samp-server-docker
