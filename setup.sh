@@ -56,3 +56,7 @@ docker pull lacledeslan/gamesvr-csgo
 docker pull lacledeslan/gamesvr-cssource
 docker pull sourceservers/left4dead2
 docker pull krustowski/samp-server-docker
+
+
+# Exit super user once done
+exit
