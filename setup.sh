@@ -13,9 +13,6 @@ fi
 # Update and Upgrade the local server
 apt update && apt upgrade -y
 
-# Install open-ssh
-apt install openssh-server -y
-
 # Uninstall all conflicting packages
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do apt-get remove -y $pkg; done
 
