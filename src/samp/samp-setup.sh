@@ -1,45 +1,37 @@
 #!/bin/bash
 
-# Set Variables
-export USER=$(whoami)
-export HOME=$(eval echo ~$USER)
+# Define paths
+CONTAINER_NAME="samp-server"
+SOURCE_PATH="/srv/samp03/"
+LOCAL_PATH="${HOME}/golden_days_2000/game_servers/samp"
+TMP_PATH="/tmp/local_sync"
 
-# Elevate the script to run as root if not already
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
-  exit
+# Create local and temporary directories if they don't exist
+mkdir -p "$LOCAL_PATH"
+mkdir -p "$TMP_PATH"
+
+# Function to sync files from container to local
+initial_sync() {
+    echo "Copying files from container to local..."
+    docker cp "$CONTAINER_NAME:$SOURCE_PATH" "$LOCAL_PATH"
+}
+
+# Function to sync files from local to container
+sync_files() {
+    echo "Syncing files to container..."
+    rsync -av --delete "$LOCAL_PATH/" "$TMP_PATH/"
+    
+    echo "Copying files into the container..."
+    docker cp "$TMP_PATH/." "$CONTAINER_NAME:$SOURCE_PATH"
+}
+
+# Perform initial sync if not already done
+if [ ! -d "$LOCAL_PATH/some_file_or_directory" ]; then
+    initial_sync
 fi
 
-# Update and Upgrade the local server
-apt update && apt upgrade -y
-
-# Uninstall all conflicting packages
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-  apt-get remove -y $pkg
+# Loop to sync files every second
+while true; do
+    sync_files
+    sleep 1
 done
-
-# Install Ansible
-apt install -y software-properties-common
-add-apt-repository --yes --update ppa:ansible/ansible
-apt install -y ansible
-
-# Install ansible items
-ansible-playbook ${HOME}/Project-Golden-Days-2000/src/ansible/00_setup.yml -vvv
-
-# Convert dos to unix
-dos2unix ${HOME}/Project-Golden-Days-2000/src/samp/samp-setup.sh
-
-# Set folders
-mkdir -p ${HOME}/golden_days_2000/game_servers/samp
-mkdir -p ${HOME}/golden_days_2000/game_servers/cs
-
-# Download game servers
-docker pull krustowski/samp-server-docker
-docker pull cs16ds/server:latest
-docker pull left4devops/l4d
-
-# Start all servers
-docker compose -f ${HOME}/Project-Golden-Days-2000/src/all-game-servers/docker-compose.yml up -d
-
-# Run additional setup script in the background
-nohup bash ${HOME}/Project-Golden-Days-2000/src/samp/samp-setup.sh > ${HOME}/Project-Golden-Days-2000/src/samp/sync.log 2>&1 &
