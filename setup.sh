@@ -39,3 +39,6 @@ mkdir ${HOME}/golden_days_2000/game_servers/cs
 docker pull krustowski/samp-server-docker
 docker pull cs16ds/server:latest
 docker pull left4devops/l4d
+
+# Start all servers
+docker compose -f /all-game-servers/docker-compose.yml up -d
