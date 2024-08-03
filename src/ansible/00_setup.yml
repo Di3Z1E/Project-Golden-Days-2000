@@ -40,9 +40,21 @@
         state: started
         enabled: yes
 
+    - name: Determine Docker Compose version and platform
+      command: uname -s
+      register: uname_s
+
+    - name: Determine Docker Compose architecture
+      command: uname -m
+      register: uname_m
+
+    - name: Build Docker Compose download URL
+      set_fact:
+        docker_compose_url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ uname_s.stdout }}-{{ uname_m.stdout }}"
+
     - name: Download Docker Compose
       get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m`
+        url: "{{ docker_compose_url }}"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
 
