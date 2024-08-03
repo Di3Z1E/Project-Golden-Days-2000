@@ -24,6 +24,9 @@ apt install -y software-properties-common
 add-apt-repository --yes --update ppa:ansible/ansible
 apt install -y ansible
 
+# Install anisble items
+ansible-playbook src/ansible/00_setup.yml -vvv
+
 # Download game servers
 docker pull krustowski/samp-server-docker
 docker pull cs16ds/server:latest
