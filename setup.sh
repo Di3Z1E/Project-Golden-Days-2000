@@ -24,6 +24,18 @@ apt install -y ansible
 # Install anisble items
 ansible-playbook src/ansible/00_setup.yml -vvv
 
+# Convert dox to unix
+dos2unix /samp/samp-setup.sh
+
+# Set folders
+mkdir ${HOME}/golden_days_2000
+mkdir ${HOME}/golden_days_2000/game_servers
+
+mkdir ${HOME}/golden_days_2000/game_servers/samp
+
+mkdir ${HOME}/golden_days_2000/game_servers/cs
+
 # Download game servers
 docker pull krustowski/samp-server-docker
 docker pull cs16ds/server:latest
+docker pull left4devops/l4d

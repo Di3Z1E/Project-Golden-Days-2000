@@ -94,3 +94,24 @@
       service:
         name: vsftpd
         state: restarted
+
+    - name: Install rsync
+      apt:
+        name: rsync
+        state: present
+
+    - name: Install cron
+      apt:
+        name: cron
+        state: present
+
+    - name: Start and enable cron service
+      service:
+        name: cron
+        state: started
+        enabled: yes
+
+    - name: Install dos2unix
+      apt:
+        name: dos2unix
+        state: present
