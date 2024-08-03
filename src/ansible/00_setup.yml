@@ -8,16 +8,6 @@
       apt:
         update_cache: yes
 
-    - name: Install Java
-      apt:
-        name: openjdk-11-jdk
-        state: present
-
-    - name: Install OpenSSH Server
-      apt:
-        name: openssh-server
-        state: present
-
     - name: Install dependencies for Docker
       apt:
         name:
@@ -66,3 +56,41 @@
       get_url:
         url: https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose
         dest: /etc/bash_completion.d/docker-compose
+
+    - name: Install OpenSSH Server
+      apt:
+        name: openssh-server
+        state: present
+
+    - name: Start and enable OpenSSH service
+      service:
+        name: ssh
+        state: started
+        enabled: yes
+
+    - name: Install vsftpd (FTP Server)
+      apt:
+        name: vsftpd
+        state: present
+
+    - name: Start and enable vsftpd service
+      service:
+        name: vsftpd
+        state: started
+        enabled: yes
+
+    - name: Configure vsftpd
+      lineinfile:
+        path: /etc/vsftpd.conf
+        regexp: '{{ item.regexp }}'
+        line: '{{ item.line }}'
+      with_items:
+        - { regexp: '^#?local_enable', line: 'local_enable=YES' }
+        - { regexp: '^#?write_enable', line: 'write_enable=YES' }
+        - { regexp: '^#?chroot_local_user', line: 'chroot_local_user=YES' }
+        - { regexp: '^#?allow_writeable_chroot', line: 'allow_writeable_chroot=YES' }
+
+    - name: Restart vsftpd to apply configuration changes
+      service:
+        name: vsftpd
+        state: restarted
