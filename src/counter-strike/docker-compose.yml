@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  cs16_server:
+    image: cs16ds/server:latest
+    container_name: cs
+    ports:
+      - "26900:26900/udp"
+      - "27020:27020/udp"
+      - "27015:27015/udp"
+      - "27015:27015"
+    environment:
+      - MAXPLAYERS=16
+      - START_MAP=de_dust2
+      - SERVER_NAME=Golden Days 2000
+      - START_MONEY=16000
+      - BUY_TIME=0.25
+      - FRIENDLY_FIRE=1
+      - SERVER_PASSWORD=
+      - RCON_PASSWORD=
+      - RESTART_ON_FAIL=false
+      - ADMIN_STEAM=0:1:1234566
+    command: +log
+    restart: unless-stopped
