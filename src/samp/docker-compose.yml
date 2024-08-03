@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   samp_server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: krustowski/samp-server-docker
     container_name: samp-server
     ports:
       - "7777:7777"
       - "7777:7777/udp"
+    volumes:
+      - ${HOME}/golden_days_2000/game_servers/samp:/mnt/container_fs
     restart: unless-stopped
